@@ -1,17 +1,18 @@
 using Rambo
 using Test
 
-const me = 0.510998928; # electron mass
-const mμ = 105.6583715; # muon mass
-const αem = 1.0 / 137.04; # EM fine structure
-const qe = sqrt(4π * αem); # electric charge
-const GF = 1.1663787e-11; # Fermi-constant
-const mw = 80.385e3;  # W-mass MeV
-const mz = 91.1876e3;  # Z-Mass MeV
-const sw = sqrt(0.2223); # sine of weak-mixing angle
-const cw = sqrt(1.0 - sw^2)  # cosine of weak-mixing angle
-
 @testset "Rambo.jl" begin
+    me::Float64 = 0.510998928; # electron mass
+    mμ::Float64 = 105.6583715; # muon mass
+    αem::Float64 = 1.0 / 137.04; # EM fine structure
+    qe::Float64 = sqrt(4π * αem); # electric charge
+    GF::Float64 = 1.1663787e-11; # Fermi-constant
+    mw::Float64 = 80.385e3;  # W-mass MeV
+    mz::Float64 = 91.1876e3;  # Z-Mass MeV
+    sw::Float64 = sqrt(0.2223); # sine of weak-mixing angle
+    cw::Float64 = sqrt(1.0 - sw^2)  # cosine of weak-mixing angle
+
+    # e⁺e⁻ → μ⁺μ⁻ in QED
     @test begin
         function msqrd_ee_to_mumu(momenta::Array{FourMomentum{Float64}, 1})
             p3::FourMomentum{Float64} = momenta[1]
@@ -43,6 +44,7 @@ const cw = sqrt(1.0 - sw^2)  # cosine of weak-mixing angle
         abs((rambo[1] - analytic) / analytic) < 1e-2
     end
 
+    # μ⁻ → e⁻ + νμ + νe
     @test begin
         function msqrd_μ_to_eνν(momenta)
             pe = momenta[1]
@@ -62,32 +64,28 @@ const cw = sqrt(1.0 - sw^2)  # cosine of weak-mixing angle
         abs((rambo[1] - analytic) / analytic) < 1e-2
     end
 
+    # Z → e⁺e⁻
     @test begin
-        sw::Float64 = sqrt(0.2223)
-        cw::Float64 = sqrt(1.0 - sw^2)
-        fsp_masses = [me, me]
+        function msqd_Z_to_ee(momenta)
+            p1 = momenta[1]
+            p2 = momenta[2]
 
-        function msqd_Z_to_ee(momenta):
-            p1 = momenta[0]
-            p2 = momenta[1]
-
-            return (qe^2* (
+            return ((qe^2* (
                     2 * (1 - 4sw^2 + 8sw^4) * scalar_product(p1, p2)^2 +
                     2 * (1 - 4sw^2 + 8sw^4) * me^4 +
                     12 * sw^2 * (-1 + 2 * sw^2) * me^2 * mz^2 +
                     (1 - 4 * sw^2 + 8 * sw^4) * scalar_product(p1, p2) *
                     (4 * me^2 + mz^2))) /
-                    (6.0 * cw^2 * sw^2 * mz^2)
+                    (6.0 * cw^2 * sw^2 * mz^2))
+        end
 
-            rambo = compute_decay_width(
-                fsp_masses, mz, num_ps_pts=10, mat_elem_sqrd=msqd_Z_to_ee
-            )
+        fsp_masses = [me, me]
+        rambo = decay_width(mz, fsp_masses; nevents=100, msqrd=msqd_Z_to_ee)
 
-            num = qe^2 * (8.0sw^4 - 4sw^2 + 1) * mz
-            den = 96π * cw^2 * sw^2
-            analytic = num / den
-
-            assert np.isclose(rambo[0], analytic, atol=0.0, rtol=5e-2)
+        analytic = qe^2 * (8.0sw^4 - 4sw^2 + 1) * mz / (96π * cw^2 * sw^2)
+        # println((rambo[1] - analytic) / analytic)
+        # println(rambo[2] / rambo[1] * 100)
+        abs((rambo[1] - analytic) / analytic) < 1e-2
     end
 
 end

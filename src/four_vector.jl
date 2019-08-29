@@ -34,54 +34,18 @@ function mass(fm::FourMomentum{T}) where T <: Real
     sqrt(scalar_product(fm, fm))
 end
 
-"""
-    Base.:+(fm1, fm2)
-
-Compute the sum of two four-momenta.
-
-# Arguments
-- `fm1::FourMomentum`: first four-momentum
-- `fm1::FourMomentum`: second four-momentum
-"""
 function Base.:+(fm1::FourMomentum{T}, fm2::FourMomentum{T}) where T <: Real
     FourMomentum(fm1.e + fm2.e, fm1.x + fm2.x, fm1.y + fm2.y, fm1.z + fm2.z)
 end
 
-"""
-    Base.:-(fm1, fm2)
-
-Compute the difference of two four-momenta.
-
-# Arguments
-- `fm1::FourMomentum`: first four-momentum
-- `fm1::FourMomentum`: second four-momentum
-"""
 function Base.:-(fm1::FourMomentum{T}, fm2::FourMomentum{T}) where T <: Real
     FourMomentum(fm1.e - fm2.e, fm1.x - fm2.x, fm1.y - fm2.y, fm1.z - fm2.z)
 end
 
-"""
-    Base.:*(fm, x)
-
-Compute the product of a scalar and four-momentum.
-
-# Arguments
-- `fm::FourMomentum`: four-momentum
-- `x::T`: scalar
-"""
 function Base.:*(fm::FourMomentum{T}, x::T) where T <: Real
     FourMomentum(fm.e * x, fm.x * x, fm.y * x, fm.z * x)
 end
 
-"""
-    Base.:*(fm, x)
-
-Compute the product of a scalar and four-momentum.
-
-# Arguments
-- `fm::FourMomentum`: four-momentum
-- `x::T`: scalar
-"""
 function Base.:*(x::T, fm::FourMomentum{T}) where T <: Real
     fm * x
 end

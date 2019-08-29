@@ -1,6 +1,5 @@
 include("four_vector.jl")
 using SpecialFunctions
-using Distributed
 
 mutable struct PhaseSpacePoint
     four_momenta::Array{FourMomentum{Float64}, 1}
