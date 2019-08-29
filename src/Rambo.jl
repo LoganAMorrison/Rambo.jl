@@ -1,5 +1,4 @@
 module Rambo
-using StatsBase
 
 include("four_vector.jl")
 include("generator.jl")
@@ -19,9 +18,11 @@ function integrate_phase_space(cme::Float64, masses::Array{Float64, 1};
                                nevents::Int64=10000, msqrd::Function=fms->1.0)
     points::Array{PhaseSpacePoint, 1} = generate_phase_space(cme, masses; nevents=nevents, msqrd=msqrd)
     weights::Array{Float64, 1} = [point.weight for point in points]
-    integral::Float64, error::Float64 = mean_and_std(weights)
 
-    (integral, error / sqrt(nevents))
+    avg::Float64 = sum(weights) / nevents
+    var::Float64 = sum((weights .- avg) .^2) / (nevents - 1)
+
+    (avg, sqrt(var / nevents))
 end
 
 """

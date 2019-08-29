@@ -39,8 +39,8 @@ using Test
         rambo = cross_section(cme, isp_masses, fsp_masses; nevents=10000, msqrd=msqrd_ee_to_mumu)
         analytic = ((4π * sqrt(1 - 4mμ^2 / cme^2) * (2me^2 + cme^2) * (2mμ^2 + cme^2) * αem^2) /
                     (3 * sqrt(1 - 4me^2 / cme^2) * cme^6))
-        # println((rambo[1] - analytic) / analytic)
-        # println(rambo[2] / rambo[1] * 100)
+        println((rambo[1] - analytic) / analytic * 100)
+        println(rambo[2] / rambo[1] * 100)
         abs((rambo[1] - analytic) / analytic) < 1e-2
     end
 
@@ -59,8 +59,8 @@ using Test
         r = me^2 / mμ^2
         corr_fac = 1.0 - 8r + 8r^3 - r^4 - 12r^2 * log(r)
         analytic = GF^2 * mμ^5 / 192π^3 * corr_fac
-        # println((rambo[1] - analytic) / analytic)
-        # println(rambo[2] / rambo[1] * 100)
+        println((rambo[1] - analytic) / analytic * 100)
+        println(rambo[2] / rambo[1] * 100)
         abs((rambo[1] - analytic) / analytic) < 1e-2
     end
 

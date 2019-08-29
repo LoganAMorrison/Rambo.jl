@@ -1,5 +1,4 @@
 include("four_vector.jl")
-using SpecialFunctions
 
 mutable struct PhaseSpacePoint
     four_momenta::Array{FourMomentum{Float64}, 1}
@@ -130,7 +129,7 @@ function boost_four_momenta!(ps_point::PhaseSpacePoint, cme::Float64)
     end
 
     n::Int64 = length(ps_point.four_momenta) # Number of final-state particles
-    ps_point.weight = (π/2)^(n-1)*cme^(2n-4)/gamma(n)/gamma(n-1)*(2π)^(4-3n)
+    ps_point.weight = (π/2)^(n-1)*cme^(2n-4)/factorial(n-2)/factorial(n-1)*(2π)^(4-3n)
 end
 
 """
