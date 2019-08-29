@@ -6,3 +6,5 @@
 [![Build Status](https://ci.appveyor.com/api/projects/status/github/LoganAMorrison/Rambo.jl?svg=true)](https://ci.appveyor.com/project/LoganAMorrison/Rambo-jl)
 [![Codecov](https://codecov.io/gh/LoganAMorrison/Rambo.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/LoganAMorrison/Rambo.jl)
 [![Coveralls](https://coveralls.io/repos/github/LoganAMorrison/Rambo.jl/badge.svg?branch=master)](https://coveralls.io/github/LoganAMorrison/Rambo.jl?branch=master)
+
+Monte-Carlo phase-space integrator for Julia.
