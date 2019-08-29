@@ -1,26 +1,10 @@
 # Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
+codecov: true
+coveralls: true
 os:
   - linux
-  - osx
 julia:
-  - 1.0
-  - nightly
-matrix:
-  allow_failures:
-    - julia: nightly
-  fast_finish: true
+  - 1.1
 notifications:
   email: false
-after_success:
-  - julia -e 'cd(Pkg.dir("Rambo")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
-jobs:
-  include:
-    - stage: Documentation
-      julia: 1.0
-      script: julia --project=docs -e '
-          using Pkg;
-          Pkg.develop(PackageSpec(path=pwd()));
-          Pkg.instantiate();
-          include("docs/make.jl");'
-      after_success: skip
