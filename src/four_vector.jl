@@ -1,4 +1,4 @@
-mutable struct FourMomentum{T <: Real}
+mutable struct FourMomentum{T<:Real}
     e::T
     x::T
     y::T
@@ -18,7 +18,10 @@ Compute the scalar product between to four-momenta.
 - `fm1::FourMomentum`: first four-momentum
 - `fm1::FourMomentum`: second four-momentum
 """
-function scalar_product(fm1::FourMomentum{T}, fm2::FourMomentum{T}) where T <: Real
+function scalar_product(
+    fm1::FourMomentum{T},
+    fm2::FourMomentum{T}
+) where T <: Real
     fm1.e * fm2.e - (fm1.x * fm2.x + fm1.y * fm2.y + fm1.z * fm2.z)
 end
 
@@ -31,7 +34,7 @@ Compute the mass of a four-momentum vector, i.e. the sqrt of the magnitude.
 - `fm::FourMomentum`: four-momentum to compute mass of
 """
 function mass(fm::FourMomentum{T}) where T <: Real
-    sqrt(scalar_product(fm, fm))
+    sqrt(abs(scalar_product(fm, fm)))
 end
 
 function Base.:+(fm1::FourMomentum{T}, fm2::FourMomentum{T}) where T <: Real

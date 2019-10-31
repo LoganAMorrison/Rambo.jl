@@ -1,7 +1,5 @@
-include("four_vector.jl")
-
 mutable struct PhaseSpacePoint
-    four_momenta::Array{FourMomentum{Float64}, 1}
+    four_momenta::Array{FourMomentum{Float64},1}
     weight::Float64
 end
 
@@ -14,8 +12,12 @@ Basis constuctor of a phase-space-point.
 - `nfsp::Int64`: number of final-state particles
 """
 function PhaseSpacePoint(nfsp::Int64)
-    four_momenta::Array{FourMomentum{Float64}, 1} = [
-        FourMomentum(0.0, 0.0, 0.0, 0.0) for _ in 1:nfsp]
+    four_momenta::Array{FourMomentum{Float64},1} = [FourMomentum(
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ) for _ = 1:nfsp]
     PhaseSpacePoint(four_momenta, 1.0)
 end
 
@@ -31,7 +33,11 @@ into four-vectors with the correct masses.
 - `cme::Float64`: center-of-mass energy
 - `masses::Array{Float64, 1}`: masses of final-state particles
 """
-function get_scale_factor(ps_point::PhaseSpacePoint, cme::Float64, masses::Array{Float64,1})
+function get_scale_factor(
+    ps_point::PhaseSpacePoint,
+    cme::Float64,
+    masses::Array{Float64,1}
+)
 
     # Initial guess
     ξ0::Float64 = sqrt(1.0 - (sum(masses) / cme)^2)
@@ -40,8 +46,8 @@ function get_scale_factor(ps_point::PhaseSpacePoint, cme::Float64, masses::Array
     iter_count::Int64 = 0
     ξ::Float64 = ξ0
 
-    tol::Float64=1e-4
-    max_iter::Int64=50
+    tol::Float64 = 1e-4
+    max_iter::Int64 = 50
     while is_done == false
         # Compute residual and derivative of residual
         f::Float64, ∂f::Float64 = -cme, 0.0
@@ -52,7 +58,7 @@ function get_scale_factor(ps_point::PhaseSpacePoint, cme::Float64, masses::Array
         end
 
         # Newton correction
-        Δξ = - (f / ∂f)
+        Δξ = -(f / ∂f)
         ξ += Δξ
 
         iter_count += iter_count
@@ -129,7 +135,8 @@ function boost_four_momenta!(ps_point::PhaseSpacePoint, cme::Float64)
     end
 
     n::Int64 = length(ps_point.four_momenta) # Number of final-state particles
-    ps_point.weight = (π/2)^(n-1)*cme^(2n-4)/factorial(n-2)/factorial(n-1)*(2π)^(4-3n)
+    ps_point.weight = (π / 2)^(n - 1) * cme^(2n - 4) / factorial(n - 2) /
+                      factorial(n - 1) * (2π)^(4 - 3n)
 end
 
 """
@@ -142,7 +149,11 @@ Correct the masses of the four-momenta and correct the weight of the event.
 - `cme::Float64`: center-of-mass energy
 - `masses::Array{Float64, 1}`: masses of final-state particles
 """
-function correct_masses!(ps_point::PhaseSpacePoint, cme::Float64, masses::Array{Float64,1})
+function correct_masses!(
+    ps_point::PhaseSpacePoint,
+    cme::Float64,
+    masses::Array{Float64,1}
+)
 
     term1::Float64 = 0.0
     term2::Float64 = 0.0
@@ -164,7 +175,7 @@ function correct_masses!(ps_point::PhaseSpacePoint, cme::Float64, masses::Array{
     end
 
     n::Int64 = length(ps_point.four_momenta)
-    term1 = term1^(2n-3)
+    term1 = term1^(2n - 3)
     term2 = 1.0 / term2
 
     ps_point.weight *= term1 * term2 * term3 * cme
@@ -180,7 +191,11 @@ Generate a single phase-space point.
 - `masses::Array{Float64, 1}`: masses of the final-state particles.
 - `msqrd::Function`: squared matrix element (default is flat)
 """
-function generate_phase_space_point(cme::Float64, masses::Array{Float64, 1}; msqrd::Function=fms->1.0)
+function generate_phase_space_point(
+    cme::Float64,
+    masses::Array{Float64,1};
+    msqrd::Function = fms -> 1.0
+)
     point = PhaseSpacePoint(length(masses))
 
     initialize_four_momenta!(point)
@@ -201,8 +216,15 @@ Generate a single phase-space point.
 - `nevents::Int64=10000`: number of events to generate
 - `msqrd::Function=fms->1.0`: squared matrix element
 """
-function generate_phase_space(cme::Float64, masses::Array{Float64, 1}; nevents::Int64=10000, msqrd::Function=fms->1.0)
-    points::Array{PhaseSpacePoint, 1} = [PhaseSpacePoint(length(masses)) for _ in 1:nevents]
+function generate_phase_space(
+    cme::Float64,
+    masses::Array{Float64,1};
+    nevents::Int64 = 10000, msqrd::Function = fms -> 1.0
+)
+    points::Array{
+        PhaseSpacePoint,
+        1
+    } = [PhaseSpacePoint(length(masses)) for _ = 1:nevents]
 
     for point in points
         initialize_four_momenta!(point)

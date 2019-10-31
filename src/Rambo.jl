@@ -26,7 +26,7 @@ function integrate_phase_space(cme::Float64, masses::Array{Float64, 1};
 end
 
 """
-    cross_section(cme, isp_masses, fsp_masses, <keyword arguments>)
+    cross_section(cme, isp_masses, fsp_masses[nevents=10000,msqrd=fms->1.0])
 
 Compute the cross section for a center-of-mass energy `cme`, initial-state
 particle masses `isp_masses`, final-state particle masses `fsp_masses`. Default
